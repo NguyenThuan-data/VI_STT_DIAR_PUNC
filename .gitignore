@@ -1,0 +1,49 @@
+# --- Python & Cache (Junk) ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# --- Environment & Security (CRITICAL) ---
+# Never upload your passwords or keys!
+.env
+.env.local
+
+# --- AI Models & Large Files ---
+models/
+vibert_cache/
+*.onnx
+*.bin
+*.pt
+*.pth
+*.zip
+
+# Ignore any directory or file named .cached anywhere in the project
+.cached
+.cached/
+
+# Ignore any file ending with the .cached extension
+*.cached
+
+# --- Temporary Audio Files ---
+# Created during transcription
+temp_*
+*.wav
+*.mp3
+
+# --- IDE Settings ---
+.vscode/
+.idea/
+*.swp
+
+# --- OS Files ---
+.DS_Store
+Thumbs.db
+
+# save transcript folder
+saved_transcripts/*
+
