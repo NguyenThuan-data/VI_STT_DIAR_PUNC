@@ -139,6 +139,6 @@ async def transcribe_endpoint(file: UploadFile = File(...)):
         if os.path.exists(clean_wav_path): os.remove(clean_wav_path)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000, timeout_keep_alive=None)
 
 

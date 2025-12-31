@@ -49,7 +49,7 @@ class Seq2LabelsModel(BertPreTrainedModel):
             except AttributeError:
                 # reserve more space
                 vocab_size = self.bert.word_embedding.num_embeddings + 5
-            self.bert.resize_token_embeddings(vocab_size + 1, mean_resizing=False)
+            self.bert.resize_token_embeddings(vocab_size + 1)
 
         predictor_dropout = config.predictor_dropout if config.predictor_dropout is not None else 0.0
         self.dropout = nn.Dropout(predictor_dropout)

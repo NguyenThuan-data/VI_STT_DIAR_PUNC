@@ -215,7 +215,7 @@ def call_asr_api(audio_path):
             resp = requests.post(
                 LOCAL_ASR_URL,
                 files={'file': (os.path.basename(upload_path), f, 'audio/mpeg')},
-                timeout=1800 # 30 mins
+                timeout=None
             )
         
         if resp.status_code == 200:
@@ -307,8 +307,7 @@ def generate_summary(full_text):
         partials.append(res)
     
     combined = "\n\n".join(partials)
-    final_prompt = f"""Tổng hợp các bản tóm tắt sau thành một báo cáo y tế hoàn chỉnh, 
-bao gồm: triệu chứng chính, chẩn đoán, và phương pháp điều trị:
+    final_prompt = f"""summarize the following transcription, no explaination needed.
 
 {combined}"""
     
@@ -522,7 +521,7 @@ if __name__ == "__main__":
     
     # Launch configuration
     demo.launch(
-        server_name="0.0.0.0",  # "127.0.0.1" for local, "0.0.0.0" for network
+        server_name="0.0.0.0",  # "127.0.0.1" for local, "0.0.0.0" for network(same network)
         server_port=INTERFACE_PORT,
         share=False,  # Set to True for temporary public link
         debug=True
