@@ -1,0 +1,74 @@
+# Python
+
+__pycache__/
+
+*.py[cod]
+
+*$py.class
+
+*.so
+
+.Python
+
+.env/
+env/
+.venv/
+
+venv/
+
+ENV/
+
+*.pyc
+
+
+# IDEs
+
+.vscode/
+
+.idea/
+
+*.swp
+
+*.swo
+
+
+# OS
+
+.DS_Store
+
+Thumbs.db
+
+
+# Git
+
+.git/
+
+.gitignore
+
+
+# Docker
+
+.dockerignore
+
+
+# Logs
+
+*.log
+
+logs/
+
+
+# Temporary
+
+*.tmp
+
+*.bak
+
+compressed.mp3
+
+
+# Cache
+
+.pytest_cache/
+
+.mypy_cache/
