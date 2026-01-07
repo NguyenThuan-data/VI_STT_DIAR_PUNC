@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Chuyển Đổi Giọng Nói Y Tế</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/wavesurfer.js@7.7.3"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🏥 Hệ Thống Chuyển Đổi Giọng Nói Y Tế</h1>
+                <p class="subtitle">Chuyển Đổi Giọng Nói Tiếng Việt Với Nhận Diện Người Nói</p>
+                <div class="status-indicator" id="apiStatus">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="statusText">Đang kiểm tra API...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Two Column Layout -->
+            <div class="two-column-layout">
+                
+            <!-- LEFT COLUMN: Audio Controls -->
+            <section class="left-column card">
+                <h2>🎵 Âm Thanh Đầu Vào - Tải Lên Hoặc Ghi Âm</h2>
+                
+                <!-- Upload and Recording Section (shown initially) -->
+                <div id="uploadSection">
+                    <!-- File Upload -->
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-content">
+                            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <p class="upload-text">Kéo thả tệp âm thanh vào đây hoặc nhấp để chọn</p>
+                            <p class="upload-hint">Hỗ trợ: MP3, WAV, M4A, OGG (Tối đa 500MB)</p>
+                        </div>
+                        <input type="file" id="fileInput" accept="audio/*" hidden>
+                    </div>
+
+                    <!-- OR Divider -->
+                    <div class="divider">
+                        <span>HOẶC</span>
+                    </div>
+
+                    <!-- Microphone Recording -->
+                    <div class="recording-controls">
+                        <button id="micBtn" class="btn btn-record">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                            </svg>
+                            <span id="micBtnText">Ghi Âm Từ Microphone</span>
+                        </button>
+                        <div class="recording-timer" id="recordingTimer" style="display: none;">
+                            <span class="recording-pulse"></span>
+                            <span id="timerText">00:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audio Player (replaces upload section after file loaded) -->
+                <div class="audio-player-container" id="audioPlayerContainer" style="display: none;">
+                    <div class="audio-header">
+                        <h3>Âm Thanh</h3>
+                        <button id="changeAudioBtn" class="btn-change" title="Đổi tệp khác">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="1 4 1 10 7 10"></polyline>
+                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                            </svg>
+                            Đổi tệp
+                        </button>
+                    </div>
+                    <div id="waveform"></div>
+                    <div class="player-controls">
+                        <button id="playPauseBtn" class="btn btn-control">
+                            <svg class="btn-icon" id="playIcon" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                            <svg class="btn-icon" id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                                <rect x="6" y="4" width="4" height="16"></rect>
+                                <rect x="14" y="4" width="4" height="16"></rect>
+                            </svg>
+                        </button>
+                        <span id="currentTime">0:00</span>
+                        <span>/</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                    <p class="player-hint">Nhấp vào sóng âm để nhảy đến thời điểm đó (phát sẽ tạm dừng)</p>
+                </div>
+
+                <!-- Time Jump Controls -->
+                <div class="time-jump-section" id="timeJumpSection" style="display: none;">
+                    <h3>⏱️ Nhảy Đến Thời Điểm</h3>
+                    <div class="time-jump-controls">
+                        <div class="time-inputs">
+                            <input type="number" id="timeJumpHours" placeholder="Giờ" min="0" max="23" class="time-input-box">
+                            <span class="time-separator">:</span>
+                            <input type="number" id="timeJumpMinutes" placeholder="Phút" min="0" max="59" class="time-input-box">
+                            <span class="time-separator">:</span>
+                            <input type="number" id="timeJumpSeconds" placeholder="Giây" min="0" max="59" class="time-input-box">
+                        </div>
+                        <button id="timeJumpBtn" class="btn btn-jump">Đi</button>
+                    </div>
+                    <p class="time-hint">Nhập thời gian (Giờ:Phút:Giây)</p>
+                </div>
+
+                <!-- Search in Transcript -->
+                <div class="search-section" id="searchSection" style="display: none;">
+                    <h3>🔍 Tìm Kiếm Trong Văn Bản</h3>
+                    <div class="search-controls">
+                        <input type="text" id="searchInput" placeholder="Nhập từ khóa..." class="search-input">
+                        <button id="searchBtn" class="btn btn-search">Tìm Kiếm</button>
+                    </div>
+                    <div id="searchResults" class="search-results"></div>
+                </div>
+
+                <!-- Processing Options -->
+                <div class="options-section">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="summaryCheckbox">
+                        <span>Tạo Tóm Tắt Bằng AI</span>
+                    </label>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="processBtn" class="btn btn-primary" disabled>
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                        Chạy
+                    </button>
+                    <button id="checkStatusBtn" class="btn btn-secondary">
+                        Kiểm Tra Trạng Thái
+                    </button>
+                </div>
+            </section>
+            
+            <!-- RIGHT COLUMN: Transcript and Results -->
+            <section class="right-column">
+                <!-- Transcript -->
+                <div class="card result-card">
+                    <h2>Văn Bản Chuyển Đổi</h2>
+                    <div class="transcript-content" id="transcriptContent">
+                        <p class="placeholder">Văn bản chuyển đổi sẽ hiển thị ở đây sau khi xử lý...</p>
+                    </div>
+                    <button class="btn btn-copy" id="copyTranscriptBtn" style="display: none;">
+                        Sao Chép Văn Bản
+                    </button>
+                </div>
+
+                <!-- Summary -->
+                <div class="card result-card" id="summaryCard" style="display: none;">
+                    <h2>Tóm Tắt AI</h2>
+                    <div class="summary-content" id="summaryContent">
+                        <p class="placeholder">Tóm tắt sẽ hiển thị ở đây...</p>
+                    </div>
+                    <button class="btn btn-copy" id="copySummaryBtn">
+                        Sao Chép Tóm Tắt
+                    </button>
+                </div>
+
+                <!-- System Logs -->
+                <div class="card logs-card">
+                    <h3>🔧 Nhật Ký Hệ Thống</h3>
+                    <div class="logs-content" id="logsContent">
+                        <p class="placeholder">Nhật ký xử lý sẽ hiển thị ở đây...</p>
+                    </div>
+                </div>
+            </section>
+            
+            </div> <!-- End two-column-layout -->
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Hệ Thống Chuyển Đổi Giọng Nói Y Tế - Nhận Diện Tiếng Việt Với Phân Biệt Người Nói & Dấu Câu</p>
+            <p class="footer-tech">Được hỗ trợ bởi Sherpa-ONNX, ViBERT, Groq API</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p id="loadingText">Đang xử lý âm thanh...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="audio-player.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+

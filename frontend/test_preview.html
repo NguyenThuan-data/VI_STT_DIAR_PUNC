@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Preview Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .preview-frame {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        iframe {
+            width: 100%;
+            height: 800px;
+            border: none;
+        }
+        .info {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .checklist {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .checklist h2 {
+            margin-top: 0;
+        }
+        .checklist label {
+            display: block;
+            padding: 8px;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        .checklist input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .checklist label:hover {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Frontend Preview - Test Before Deployment</h1>
+    
+    <div class="info">
+        <h3>⚠️ Preview Mode - Backend Not Running</h3>
+        <p>You're viewing the frontend in isolation. API calls will fail (expected).</p>
+        <p><strong>What works:</strong> UI, styling, file selection, audio player, waveform display</p>
+        <p><strong>What doesn't work:</strong> Transcription, API status check (no backend)</p>
+    </div>
+
+    <div class="checklist">
+        <h2>✅ Visual Checklist</h2>
+        <p>Test these features and check them off:</p>
+        
+        <label>
+            <input type="checkbox"> Header displays with blue gradient background
+        </label>
+        <label>
+            <input type="checkbox"> Status indicator visible (will show "offline")
+        </label>
+        <label>
+            <input type="checkbox"> Upload zone with dashed border appears
+        </label>
+        <label>
+            <input type="checkbox"> Upload zone highlights on hover
+        </label>
+        <label>
+            <input type="checkbox"> Microphone recording button visible
+        </label>
+        <label>
+            <input type="checkbox"> File upload works (click or drag-drop)
+        </label>
+        <label>
+            <input type="checkbox"> <strong>Audio waveform displays WITHOUT scrollbar</strong> ⭐
+        </label>
+        <label>
+            <input type="checkbox"> <strong>Waveform compressed to fit container width</strong> ⭐
+        </label>
+        <label>
+            <input type="checkbox"> <strong>Click on waveform seeks and pauses</strong> ⭐
+        </label>
+        <label>
+            <input type="checkbox"> Play/pause button works
+        </label>
+        <label>
+            <input type="checkbox"> Time display shows current position
+        </label>
+        <label>
+            <input type="checkbox"> AI Summary checkbox visible
+        </label>
+        <label>
+            <input type="checkbox"> Process button appears (disabled until audio loaded)
+        </label>
+        <label>
+            <input type="checkbox"> Check API Status button visible
+        </label>
+        <label>
+            <input type="checkbox"> All buttons have hover effects
+        </label>
+        <label>
+            <input type="checkbox"> Footer with tech stack info
+        </label>
+        <label>
+            <input type="checkbox"> Responsive design works (resize window)
+        </label>
+        <label>
+            <input type="checkbox"> Mobile view looks good (F12 → device toolbar)
+        </label>
+        <label>
+            <input type="checkbox"> Overall design looks professional and medical-themed
+        </label>
+    </div>
+
+    <h2>📱 Live Preview</h2>
+    <div class="preview-frame">
+        <iframe src="index.html"></iframe>
+    </div>
+
+    <div class="info">
+        <h3>🚀 Ready to Deploy?</h3>
+        <p>If all checklist items look good, you're ready to deploy!</p>
+        <p><strong>Next steps:</strong></p>
+        <pre style="background: #f8f9fa; padding: 10px; border-radius: 4px;">
+docker-compose down
+docker-compose build
+docker-compose up -d
+        </pre>
+    </div>
+</body>
+</html>
+

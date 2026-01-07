@@ -1,0 +1,17 @@
+version: '3.8'
+
+# GPU Extension for docker-compose.yml
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.gpu.yml up --build
+
+services:
+  asr_app:
+    environment:
+      - USE_GPU=true  # Enable GPU acceleration
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+

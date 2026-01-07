@@ -6,9 +6,8 @@ python-multipart>=0.0.9
 requests>=2.31.0
 python-dotenv>=1.0.0
 
-# --- GRADIO FRONTEND ---
-# Upgraded to fix Pydantic v2 conflicts
-gradio>=4.44.0
+# --- GRADIO REMOVED ---
+# Replaced with custom HTML/CSS/JavaScript frontend
 
 # --- AI ENGINE (Sherpa ONNX) ---
 sherpa-onnx>=1.9.0

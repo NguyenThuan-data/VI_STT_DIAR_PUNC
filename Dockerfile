@@ -18,9 +18,11 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --upgrade pip && \
     pip install --no-cache-dir --default-timeout=1000 -r requirements.txt
 
-# 2. Copy the entire project structure
-# This copies 'medical_api', 'vibert_pipeline', and everything else
-COPY . .
+# 2. Copy the project structure
+COPY medical_api/ /app/medical_api/
+COPY vibert_pipeline/ /app/vibert_pipeline/
+COPY frontend/ /app/frontend/
+COPY start_services.sh /app/
 
 # 3. Pre-download Vibert models (Optional but recommended)
 # We try to run the setup script during build to save time later
@@ -35,9 +37,8 @@ RUN mkdir -p /app/models \
     /app/processing_workspace \
     /app/vibert_cache
 
-# 6. Expose Ports (8000 for API, 7860 for UI)
+# 6. Expose Port (8000 for API, frontend served by nginx)
 EXPOSE 8000
-EXPOSE 7860
 
 # 7. Start Command
 CMD ["/bin/bash","./start_services.sh"]
