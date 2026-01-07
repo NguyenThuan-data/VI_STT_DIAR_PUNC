@@ -274,19 +274,27 @@ async function processTranscription() {
         // Display transcript
         displayTranscript(transcribeData.text, transcribeData.segments);
         showLog('✓ Chuyển đổi hoàn tất');
+        hideLoading(); // Clear loading after transcript is ready
 
         // Step 2: Generate summary (if enabled)
         if (summaryEnabled) {
             showLog('[2/2] Đang tạo tóm tắt bằng AI...');
             showLoading('Đang tạo tóm tắt AI...');
             
-            const summaryData = await callSummarizeAPI(transcribeData.text);
-            
-            if (summaryData && summaryData.summary) {
-                displaySummary(summaryData.summary, summaryData.model_used);
-                showLog(`✓ Đã tạo tóm tắt sử dụng ${summaryData.model_used}`);
-            } else {
-                showLog('⚠ Tạo tóm tắt thất bại hoặc bị bỏ qua');
+            try {
+                const summaryData = await callSummarizeAPI(transcribeData.text);
+                
+                if (summaryData && summaryData.summary) {
+                    displaySummary(summaryData.summary, summaryData.model_used);
+                    showLog(`✓ Đã tạo tóm tắt sử dụng ${summaryData.model_used}`);
+                } else {
+                    showLog('⚠ Tạo tóm tắt thất bại hoặc bị bỏ qua');
+                }
+            } catch (err) {
+                console.error('Summary error:', err);
+                showLog('⚠ Lỗi khi tạo tóm tắt: ' + err.message);
+            } finally {
+                hideLoading(); // Always clear loading after summary attempt
             }
         } else {
             showLog('[2/2] Bỏ qua tóm tắt (không được bật)');
@@ -326,20 +334,36 @@ async function callTranscribeAPI(audioFile) {
 }
 
 async function callSummarizeAPI(text) {
-    const response = await fetch(`${API_BASE_URL}/summarize`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ text: text })
-    });
+    // Add timeout to prevent hanging
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 120000); // 120 second timeout
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/summarize`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: text }),
+            signal: controller.signal
+        });
 
-    if (!response.ok) {
-        console.warn('Summary API failed:', response.status);
-        return null;
+        clearTimeout(timeout);
+
+        if (!response.ok) {
+            console.warn('Summary API failed:', response.status);
+            return null;
+        }
+
+        return await response.json();
+    } catch (error) {
+        clearTimeout(timeout);
+        if (error.name === 'AbortError') {
+            console.warn('Summary API timeout after 120s');
+            return null;
+        }
+        throw error;
     }
-
-    return await response.json();
 }
 
 // ===========================

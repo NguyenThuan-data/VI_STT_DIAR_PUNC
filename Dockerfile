@@ -16,6 +16,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --upgrade pip && \
+    # Make sure onnxruntime-cpu is not installed (conflicts with GPU)
+    pip uninstall -y onnxruntime && \
     pip install --no-cache-dir --default-timeout=1000 -r requirements.txt
 
 # 2. Copy the project structure

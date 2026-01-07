@@ -57,6 +57,10 @@ diarizer = sherpa_onnx.OfflineSpeakerDiarization(diarization_config)
 print(" Diarization Ready")
 
 print(" Loading Transcription...")
+# Provider options: "cpu", "cuda", "CUDAExecutionProvider"
+gpu_provider = "CUDAExecutionProvider" if USE_GPU else "cpu"
+print(f"   Using provider: {gpu_provider}")
+
 recognizer = sherpa_onnx.OfflineRecognizer.from_transducer(
     tokens="./models/vi_offline/tokens.txt",
     encoder="./models/vi_offline/encoder-epoch-20-avg-10.int8.onnx",
@@ -64,7 +68,7 @@ recognizer = sherpa_onnx.OfflineRecognizer.from_transducer(
     joiner="./models/vi_offline/joiner-epoch-20-avg-10.int8.onnx",
     num_threads=4, 
     sample_rate=16000, 
-    provider="cuda" if USE_GPU else "cpu",
+    provider=gpu_provider,
     decoding_method="greedy_search"
 )
 print(" Transcription Ready")
