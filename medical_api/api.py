@@ -49,7 +49,7 @@ diarization_config = sherpa_onnx.OfflineSpeakerDiarizationConfig(
     ),
     clustering=sherpa_onnx.FastClusteringConfig(
         num_clusters=-1, 
-        threshold=0.6  # Increased from 0.5 to reduce over-segmentation
+        threshold=0.55  # Balanced: reduces over-segmentation without merging different speakers
     )
 
 )
