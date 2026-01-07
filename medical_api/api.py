@@ -124,6 +124,17 @@ async def transcribe_endpoint(file: UploadFile = File(...)):
         
         print(f"   -> Filtered segments: {len(all_segments)} → {len(segments)} (removed segments < {min_duration}s)")
         
+        # Remap speaker IDs to be sequential (0, 1, 2, 3...) after filtering noise
+        unique_speakers = sorted(set(seg.speaker for seg in segments))
+        speaker_id_map = {old_id: new_id for new_id, old_id in enumerate(unique_speakers)}
+        
+        print(f"   -> Speaker remapping: {len(unique_speakers)} unique speakers")
+        if len(unique_speakers) <= 10:
+            print(f"      Original IDs: {unique_speakers}")
+        else:
+            print(f"      Original IDs: {unique_speakers[:10]}... (showing first 10)")
+        print(f"      Remapped to: Speaker_0 to Speaker_{len(unique_speakers)-1}")
+        
         full_transcript = ""
         output_segments = []
         
@@ -136,7 +147,9 @@ async def transcribe_endpoint(file: UploadFile = File(...)):
         for seg in segments:
             start_sec = seg.start
             end_sec = seg.end
-            speaker_label = f"Speaker_{seg.speaker}" 
+            # Use remapped speaker ID (sequential: 0, 1, 2, 3...)
+            remapped_speaker_id = speaker_id_map[seg.speaker]
+            speaker_label = f"Speaker_{remapped_speaker_id}" 
             
             # Slice Audio
             start_idx = int(start_sec * 16000)
