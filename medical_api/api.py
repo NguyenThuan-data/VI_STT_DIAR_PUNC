@@ -11,8 +11,8 @@ import sherpa_onnx
 import time
 
 # Import our custom services
-import vibert_service
-import groq_service
+import medical_api.vibert_service as vibert_service
+import medical_api.groq_service as groq_service
 # ==========================================
 # 1. SETUP
 # ==========================================

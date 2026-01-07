@@ -28,8 +28,9 @@ COPY start_services.sh /app/
 # We try to run the setup script during build to save time later
 RUN python vibert_pipeline/1_setup_models.py || echo "Vibert setup skipped during build"
 
-# 4. Make the start script executable
-RUN chmod +x start_services.sh
+# 4. Make the start script executable and fix line endings
+RUN chmod +x start_services.sh && \
+    sed -i 's/\r$//' start_services.sh
 
 # 5. Create necessary data folders
 RUN mkdir -p /app/models \
