@@ -418,10 +418,18 @@ body {
     background: var(--border-color);
 }
 
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
 .btn-copy {
     background: var(--accent-color);
     color: white;
-    margin-top: 15px;
+    flex: 1;
+    min-width: 120px;
 }
 
 .btn-copy:hover {

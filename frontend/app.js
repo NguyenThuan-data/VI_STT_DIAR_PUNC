@@ -230,6 +230,22 @@ function setupProcessButton() {
             copyToClipboard('summaryContent', 'Đã sao chép tóm tắt!');
         });
     }
+
+    // Download buttons
+    const downloadTranscriptBtn = document.getElementById('downloadTranscriptBtn');
+    const downloadSummaryBtn = document.getElementById('downloadSummaryBtn');
+    
+    if (downloadTranscriptBtn) {
+        downloadTranscriptBtn.addEventListener('click', () => {
+            downloadTextFile('transcriptContent', 'transcript');
+        });
+    }
+    
+    if (downloadSummaryBtn) {
+        downloadSummaryBtn.addEventListener('click', () => {
+            downloadTextFile('summaryContent', 'summary');
+        });
+    }
 }
 
 async function processTranscription() {
@@ -370,14 +386,14 @@ async function checkAPIStatus() {
 
 function displayTranscript(text, segments) {
     const transcriptContent = document.getElementById('transcriptContent');
-    const copyBtn = document.getElementById('copyTranscriptBtn');
+    const transcriptButtons = document.getElementById('transcriptButtons');
     
     // Store segments globally for search
     transcriptSegments = segments || [];
     
     // Display transcript
     transcriptContent.textContent = text;
-    copyBtn.style.display = 'inline-flex';
+    transcriptButtons.style.display = 'flex';
     
     // Show time jump and search sections
     const timeJumpSection = document.getElementById('timeJumpSection');
@@ -464,6 +480,34 @@ function copyToClipboard(elementId, successMessage) {
         console.error('Failed to copy:', err);
         showError('Không thể sao chép vào clipboard');
     });
+}
+
+function downloadTextFile(elementId, filePrefix) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    const text = element.textContent;
+    if (!text || text.includes('hiển thị ở đây')) {
+        showError('Không có nội dung để tải xuống');
+        return;
+    }
+    
+    // Create filename with timestamp
+    const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,'-');
+    const filename = `${filePrefix}_${timestamp}.txt`;
+    
+    // Create blob and download
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    showLog(`✓ Đã tải xuống: ${filename}`);
 }
 
 // ===========================
