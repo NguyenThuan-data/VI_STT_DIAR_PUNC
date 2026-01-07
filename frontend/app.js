@@ -428,16 +428,17 @@ function showError(message) {
 }
 
 function showLoading(message) {
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const loadingText = document.getElementById('loadingText');
-    
-    loadingOverlay.style.display = 'flex';
-    loadingText.textContent = message;
+    const transcriptContent = document.getElementById('transcriptContent');
+    transcriptContent.innerHTML = `
+        <div class="loading-state">
+            <div class="loading-spinner-inline"></div>
+            <p>${message}</p>
+        </div>
+    `;
 }
 
 function hideLoading() {
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    loadingOverlay.style.display = 'none';
+    // Loading will be replaced by actual content or kept as placeholder
 }
 
 // ===========================
