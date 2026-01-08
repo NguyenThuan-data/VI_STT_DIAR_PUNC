@@ -5,14 +5,17 @@
     --primary-color: #004610;     /* Dark green base color */
     --primary-dark: #003308;
     --primary-light: #005913;
-    --accent-color: #FFD700;      /* Gold button color */
+    --accent-color: #00C853;      /* Green button color */
+    --accent-dark: #00A843;       /* Darker green for hover */
     --danger-color: #E53935;
+    --danger-dark: #C62828;       /* Darker red for hover */
     --warning-color: #FFA726;
     --bg-color: #F5F7FA;
     --card-bg: #FFFFFF;
     --text-primary: #2C3E50;
     --text-secondary: #7F8C8D;
     --border-color: #E0E6ED;
+    --border-dark: #BDBDBD;       /* Darker border for hover */
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
@@ -217,8 +220,9 @@ body {
     color: white;
 }
 
-.btn-record:hover {
-    background: #C62828;
+.btn-record:hover:not(:disabled) {
+    background: var(--danger-dark);  /* Darker red */
+    transform: translateY(-1px);
 }
 
 .btn-record.recording {
@@ -287,9 +291,10 @@ body {
 }
 
 .btn-change:hover {
-    background: white;
-    border-color: var(--primary-color);
-    color: var(--primary-color);
+    background: var(--bg-color);  /* Slightly darker background */
+    border-color: var(--primary-dark);
+    color: var(--primary-dark);
+    transform: translateY(-1px);
 }
 
 #waveform {
@@ -326,9 +331,9 @@ body {
     font-weight: bold;
 }
 
-.btn-control:hover {
-    background: #E5C100;  /* Darker yellow on hover */
-    transform: scale(1.05);
+.btn-control:hover:not(:disabled) {
+    background: var(--accent-dark);  /* Darker yellow */
+    transform: scale(1.08);
 }
 
 .btn-control .btn-icon {
@@ -407,7 +412,7 @@ body {
 }
 
 .btn-primary:hover:not(:disabled) {
-    background: var(--primary-dark);
+    background: var(--accent-dark);  /* Darker yellow */
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
 }
@@ -418,8 +423,10 @@ body {
     border: 2px solid var(--border-color);
 }
 
-.btn-secondary:hover {
-    background: var(--border-color);
+.btn-secondary:hover:not(:disabled) {
+    background: var(--border-dark);  /* Darker gray */
+    border-color: var(--border-dark);
+    transform: translateY(-1px);
 }
 
 .button-group {
@@ -436,8 +443,9 @@ body {
     min-width: 120px;
 }
 
-.btn-copy:hover {
-    background: #00A843;
+.btn-copy:hover:not(:disabled) {
+    background: var(--accent-dark);  /* Darker yellow */
+    transform: translateY(-1px);
 }
 
 .action-buttons {
@@ -623,8 +631,9 @@ body {
     font-weight: 600;
 }
 
-.btn-jump:hover {
-    background: #E5C100;  /* Darker yellow on hover */
+.btn-jump:hover:not(:disabled) {
+    background: var(--accent-dark);  /* Darker yellow */
+    transform: translateY(-1px);
 }
 
 .time-hint {
@@ -677,8 +686,9 @@ body {
     min-width: 100px;
 }
 
-.btn-search:hover {
-    background: #00A843;
+.btn-search:hover:not(:disabled) {
+    background: var(--accent-dark);  /* Darker yellow */
+    transform: translateY(-1px);
 }
 
 .search-results {
