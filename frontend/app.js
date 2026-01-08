@@ -585,44 +585,38 @@ function handleTimeInputArrowKey(event, inputElement, inputType) {
     const maxMinutes = Math.floor((duration % 3600) / 60);
     const maxSeconds = Math.floor(duration % 60);
     
+    // Determine max value for this input type
+    let maxValue;
+    if (inputType === 'hours') {
+        maxValue = maxHours;
+    } else if (inputType === 'minutes') {
+        maxValue = maxMinutes;
+    } else if (inputType === 'seconds') {
+        maxValue = maxSeconds;
+    }
+    
     let newValue = currentValue;
-    let shouldPreventDefault = false;
+    
+    // Always prevent default to enforce our limits
+    event.preventDefault();
     
     if (event.key === 'ArrowDown') {
-        // Down arrow at 0 wraps to max value from audio length
-        if (currentValue === 0 || inputElement.value === '') {
-            shouldPreventDefault = true;
-            if (inputType === 'hours') {
-                newValue = maxHours;
-            } else if (inputType === 'minutes') {
-                newValue = maxMinutes;
-            } else if (inputType === 'seconds') {
-                newValue = maxSeconds;
-            }
+        // Down arrow: decrement or wrap to max
+        if (currentValue <= 0 || inputElement.value === '') {
+            newValue = maxValue; // Wrap to max
+        } else {
+            newValue = currentValue - 1; // Normal decrement
         }
-        // Otherwise allow default browser behavior (normal decrement)
     } else if (event.key === 'ArrowUp') {
-        // Up arrow at max wraps to 0
-        let maxValue;
-        if (inputType === 'hours') {
-            maxValue = maxHours;
-        } else if (inputType === 'minutes') {
-            maxValue = maxMinutes;
-        } else if (inputType === 'seconds') {
-            maxValue = maxSeconds;
-        }
-        
+        // Up arrow: increment or wrap to 0
         if (currentValue >= maxValue) {
-            shouldPreventDefault = true;
-            newValue = 0;
+            newValue = 0; // Wrap to zero
+        } else {
+            newValue = currentValue + 1; // Normal increment, enforcing max
         }
-        // Otherwise allow default browser behavior (normal increment)
     }
     
-    if (shouldPreventDefault) {
-        event.preventDefault();
-        inputElement.value = newValue;
-    }
+    inputElement.value = newValue;
 }
 
 function jumpToTime() {
