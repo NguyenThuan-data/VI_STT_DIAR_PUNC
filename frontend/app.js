@@ -279,7 +279,8 @@ async function processTranscription() {
         // Step 2: Generate summary (if enabled)
         if (summaryEnabled) {
             showLog('[2/2] Đang tạo tóm tắt bằng AI...');
-            showLoading('Đang tạo tóm tắt AI...');
+            // DON'T call showLoading() here - it would overwrite the transcript!
+            // The log message is enough to show progress
             
             try {
                 const summaryData = await callSummarizeAPI(transcribeData.text);
@@ -293,8 +294,6 @@ async function processTranscription() {
             } catch (err) {
                 console.error('Summary error:', err);
                 showLog('⚠ Lỗi khi tạo tóm tắt: ' + err.message);
-            } finally {
-                hideLoading(); // Always clear loading after summary attempt
             }
         } else {
             showLog('[2/2] Bỏ qua tóm tắt (không được bật)');
