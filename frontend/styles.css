@@ -588,6 +588,14 @@ body {
     font-size: 1rem;
     text-align: center;
     transition: border-color 0.3s ease;
+    -moz-appearance: textfield; /* Firefox: Remove spinner */
+}
+
+/* Chrome, Safari, Edge: Remove spinner buttons */
+.time-input-box::-webkit-outer-spin-button,
+.time-input-box::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .time-input-box:focus {

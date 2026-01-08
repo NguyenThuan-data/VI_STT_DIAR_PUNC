@@ -568,7 +568,45 @@ function setupTimeJump() {
                 handleTimeInputArrowKey(e, element, type);
             }
         });
+        
+        // Validate on any input change (handles spinner buttons and manual typing)
+        element.addEventListener('input', () => {
+            // Use setTimeout to ensure validation runs after browser updates the value
+            setTimeout(() => validateTimeInput(element, type), 0);
+        });
     });
+}
+
+/**
+ * Validate and enforce max values for time inputs
+ */
+function validateTimeInput(inputElement, inputType) {
+    const duration = audioPlayer.getDuration();
+    if (duration <= 0) return; // No audio loaded
+    
+    const currentValue = parseInt(inputElement.value) || 0;
+    
+    // Calculate max values from audio duration
+    const maxHours = Math.floor(duration / 3600);
+    const maxMinutes = Math.floor((duration % 3600) / 60);
+    const maxSeconds = Math.floor(duration % 60);
+    
+    // Determine max value for this input type
+    let maxValue;
+    if (inputType === 'hours') {
+        maxValue = maxHours;
+    } else if (inputType === 'minutes') {
+        maxValue = maxMinutes;
+    } else if (inputType === 'seconds') {
+        maxValue = maxSeconds;
+    }
+    
+    // Enforce max limit
+    if (currentValue > maxValue) {
+        inputElement.value = maxValue;
+    } else if (currentValue < 0) {
+        inputElement.value = 0;
+    }
 }
 
 /**
