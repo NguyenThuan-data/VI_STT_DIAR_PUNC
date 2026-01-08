@@ -316,15 +316,18 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--primary-color);
+    background: var(--accent-color);  /* Yellow button */
     border: none;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s ease;
+    color: black;  /* Black text */
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .btn-control:hover {
-    background: var(--primary-dark);
+    background: #E5C100;  /* Darker yellow on hover */
     transform: scale(1.05);
 }
 

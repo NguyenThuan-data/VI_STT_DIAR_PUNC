@@ -370,13 +370,7 @@ async function callSummarizeAPI(text) {
 // ===========================
 
 function setupStatusCheck() {
-    const checkStatusBtn = document.getElementById('checkStatusBtn');
-    
-    if (checkStatusBtn) {
-        checkStatusBtn.addEventListener('click', async () => {
-            await checkAPIStatus();
-        });
-    }
+    // Status check button removed from UI
 }
 
 async function checkAPIStatus() {

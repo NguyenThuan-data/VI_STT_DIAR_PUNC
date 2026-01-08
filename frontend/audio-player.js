@@ -24,8 +24,8 @@ class AudioPlayer {
         this.wavesurfer = WaveSurfer.create({
             container: '#waveform',
             waveColor: '#cccccc',     // Grey when not playing
-            progressColor: '#ffa500',  // Orange when playing
-            cursorColor: '#cc8400',
+            progressColor: '#ff0000',  // Red when playing
+            cursorColor: '#cc0000',    // Dark red cursor
             barWidth: 2,
             barRadius: 3,
             responsive: true,
