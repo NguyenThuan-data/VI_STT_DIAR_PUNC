@@ -541,18 +541,88 @@ function setupTimeJump() {
         });
     }
     
-    // Allow Enter key on any time input field
-    const timeInputs = ['timeJumpHours', 'timeJumpMinutes', 'timeJumpSeconds'];
-    timeInputs.forEach(inputId => {
-        const input = document.getElementById(inputId);
-        if (input) {
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    jumpToTime();
-                }
-            });
-        }
+    // Setup keyboard controls for time input fields
+    const hoursInput = document.getElementById('timeJumpHours');
+    const minutesInput = document.getElementById('timeJumpMinutes');
+    const secondsInput = document.getElementById('timeJumpSeconds');
+    
+    const timeInputs = [
+        { element: hoursInput, type: 'hours' },
+        { element: minutesInput, type: 'minutes' },
+        { element: secondsInput, type: 'seconds' }
+    ];
+    
+    timeInputs.forEach(({ element, type }) => {
+        if (!element) return;
+        
+        // Enter key to jump
+        element.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                jumpToTime();
+            }
+        });
+        
+        // Arrow keys for circular navigation
+        element.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                handleTimeInputArrowKey(e, element, type);
+            }
+        });
     });
+}
+
+/**
+ * Handle arrow key navigation with circular wraparound based on audio duration
+ */
+function handleTimeInputArrowKey(event, inputElement, inputType) {
+    const currentValue = parseInt(inputElement.value) || 0;
+    const duration = audioPlayer.getDuration();
+    
+    if (duration <= 0) return; // No audio loaded
+    
+    // Calculate max values from audio duration
+    const maxHours = Math.floor(duration / 3600);
+    const maxMinutes = Math.floor((duration % 3600) / 60);
+    const maxSeconds = Math.floor(duration % 60);
+    
+    let newValue = currentValue;
+    let shouldPreventDefault = false;
+    
+    if (event.key === 'ArrowDown') {
+        // Down arrow at 0 wraps to max value from audio length
+        if (currentValue === 0 || inputElement.value === '') {
+            shouldPreventDefault = true;
+            if (inputType === 'hours') {
+                newValue = maxHours;
+            } else if (inputType === 'minutes') {
+                newValue = maxMinutes;
+            } else if (inputType === 'seconds') {
+                newValue = maxSeconds;
+            }
+        }
+        // Otherwise allow default browser behavior (normal decrement)
+    } else if (event.key === 'ArrowUp') {
+        // Up arrow at max wraps to 0
+        let maxValue;
+        if (inputType === 'hours') {
+            maxValue = maxHours;
+        } else if (inputType === 'minutes') {
+            maxValue = maxMinutes;
+        } else if (inputType === 'seconds') {
+            maxValue = maxSeconds;
+        }
+        
+        if (currentValue >= maxValue) {
+            shouldPreventDefault = true;
+            newValue = 0;
+        }
+        // Otherwise allow default browser behavior (normal increment)
+    }
+    
+    if (shouldPreventDefault) {
+        event.preventDefault();
+        inputElement.value = newValue;
+    }
 }
 
 function jumpToTime() {
