@@ -157,17 +157,10 @@ class AudioPlayer {
      */
     updatePlayPauseButton(isPlaying) {
         this.isPlaying = isPlaying;
-        const playIcon = document.getElementById('playIcon');
-        const pauseIcon = document.getElementById('pauseIcon');
+        const playPauseText = document.getElementById('playPauseText');
 
-        if (playIcon && pauseIcon) {
-            if (isPlaying) {
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-            } else {
-                playIcon.style.display = 'block';
-                pauseIcon.style.display = 'none';
-            }
+        if (playPauseText) {
+            playPauseText.textContent = isPlaying ? '⏸' : '▶';
         }
     }
 
