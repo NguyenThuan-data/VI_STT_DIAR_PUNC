@@ -52,6 +52,7 @@ certs/
 
 # Saved Outputs
 saved_transcripts/
+uploads/
 *.txt
 
 # Docker

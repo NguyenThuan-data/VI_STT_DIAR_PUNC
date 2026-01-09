@@ -110,9 +110,8 @@ Body: {"text": "transcript text"}
 
 ## 📖 Documentation
 
-- **[FRONTEND_CHANGES.md](FRONTEND_CHANGES.md)** - Complete architecture and feature documentation
-- **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** - Step-by-step deployment instructions
-- **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Implementation details and checklist
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Complete deployment guide (Quick start, Git workflow, Production, Troubleshooting)
+- **[BUTTON_DESIGN_SYSTEM.md](BUTTON_DESIGN_SYSTEM.md)** - UI design system and button specifications
 
 ## 🛠️ Technology Stack
 
@@ -181,7 +180,7 @@ docker-compose -f docker-compose.yml -f docker-compose.gpu.yml up --build
 nvidia-docker --version
 ```
 
-For more troubleshooting, see [FRONTEND_CHANGES.md](FRONTEND_CHANGES.md#troubleshooting)
+For more troubleshooting, see [DEPLOYMENT.md](DEPLOYMENT.md#troubleshooting)
 
 ## 🚢 Deployment to Production Server
 
@@ -242,7 +241,7 @@ This is a production medical system. For modifications:
 ## 📞 Support
 
 For issues or questions:
-1. Check documentation in `FRONTEND_CHANGES.md`
+1. Check [DEPLOYMENT.md](DEPLOYMENT.md) for deployment and troubleshooting
 2. Review logs: `docker logs medical_asr_system`
 3. Verify API at `/docs` endpoint
 4. Check browser console (F12) for frontend errors
