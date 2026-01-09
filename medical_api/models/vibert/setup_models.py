@@ -118,7 +118,7 @@ def patch_model_files():
         if "mean_resizing=False" not in code:
             code = code.replace(
                 "self.bert.resize_token_embeddings(vocab_size + 1)",
-                "self.bert.resize_token_embeddings(vocab_size + 1, mean_resizing=False)"
+                "self.bert.resize_token_embeddings(vocab_size + 1)"
             )
         
         with open(p1, "w", encoding="utf-8") as f:

@@ -32,7 +32,7 @@ import librosa
 import soundfile as sf
 from fastapi import UploadFile
 
-from medical_api.config import AudioConfig
+from medical_api.config import AudioConfig,APIConfig
 from medical_api.exceptions import AudioProcessingError, TranscriptionError
 
 
@@ -98,8 +98,8 @@ class AudioProcessor:
             >>> response = requests.post('/transcribe', files=files)
             >>> result = response.json()
         """
-        file_path = f"{AudioConfig.UPLOAD_DIR}/{file.filename}"
-        clean_wav_path = f"{AudioConfig.UPLOAD_DIR}/clean_{os.path.splitext(file.filename)[0]}.wav"
+        file_path = f"{APIConfig.UPLOAD_DIR}/{file.filename}"
+        clean_wav_path = f"{APIConfig.UPLOAD_DIR}/clean_{os.path.splitext(file.filename)[0]}.wav"
         
         start_time = time.time()
         

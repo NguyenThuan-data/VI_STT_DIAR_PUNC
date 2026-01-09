@@ -2,6 +2,7 @@
 medical_api/models/vi_offline/
 medical_api/models/dia_seg/
 medical_api/models/dia_embed/
+medical_api/models/vibert/
 
 # ViBERT cache (auto-downloaded)
 vibert_cache/
@@ -30,3 +31,4 @@ __pycache__/
 .idea/
 *.swp
 *.swo
+venv/

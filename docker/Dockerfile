@@ -21,8 +21,9 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --no-cache-dir --default-timeout=1000 -r requirements.txt
 
 # 2. Copy the project structure (updated paths)
-COPY ../medical_api/ /app/medical_api/
-COPY ../frontend/ /app/frontend/
+COPY medical_api/ /app/medical_api/
+COPY frontend/ /app/frontend/
+COPY docker/start_services.sh /app/start_services.sh
 
 # 3. Pre-download Vibert models (Optional but recommended)
 # Updated path: vibert_pipeline → medical_api/models/vibert
