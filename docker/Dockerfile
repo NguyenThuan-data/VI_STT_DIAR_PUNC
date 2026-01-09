@@ -20,15 +20,13 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     pip uninstall -y onnxruntime && \
     pip install --no-cache-dir --default-timeout=1000 -r requirements.txt
 
-# 2. Copy the project structure
-COPY medical_api/ /app/medical_api/
-COPY vibert_pipeline/ /app/vibert_pipeline/
-COPY frontend/ /app/frontend/
-COPY start_services.sh /app/
+# 2. Copy the project structure (updated paths)
+COPY ../medical_api/ /app/medical_api/
+COPY ../frontend/ /app/frontend/
 
 # 3. Pre-download Vibert models (Optional but recommended)
-# We try to run the setup script during build to save time later
-RUN python vibert_pipeline/1_setup_models.py || echo "Vibert setup skipped during build"
+# Updated path: vibert_pipeline → medical_api/models/vibert
+RUN python medical_api/models/vibert/setup_models.py || echo "Vibert setup skipped during build"
 
 # 4. Make the start script executable and fix line endings
 RUN chmod +x start_services.sh && \

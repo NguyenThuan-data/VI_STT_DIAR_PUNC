@@ -1,9 +1,31 @@
 """
-Groq AI Summary Service
-Integrates Groq API for generating medical transcription summaries
+Groq AI Summary Service.
+
+Integrates Groq API for generating medical transcription summaries using
+LLaMA language models. Provides automatic text chunking for long documents
+and model fallback for rate limiting.
+
+This service handles:
+    - Groq API client initialization
+    - Text chunking for long transcripts
+    - Model fallback strategy (llama-3.3-70b → llama-3.1-70b → llama-3.1-8b)
+    - Medical summary generation
+    - Error handling and graceful degradation
+
+Example:
+    >>> from medical_api.services import groq_service
+    >>> 
+    >>> # Generate summary
+    >>> result = groq_service.generate_summary(transcript_text)
+    >>> print(result['summary'])
+    >>> print(f"Model used: {result['model_used']}")
 """
+
 import os
+from typing import Dict, Any, Tuple
 from groq import Groq
+
+from medical_api.exceptions import SummarizationError
 
 # Initialize Groq client
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
@@ -19,16 +41,24 @@ else:
     print("⚠ Warning: GROQ_API_KEY not set, summaries will be unavailable")
 
 
-def chunk_text(text, max_chars=12000):
+def chunk_text(text: str, max_chars: int = 12000) -> list:
     """
-    Split text into chunks for processing long documents
+    Split text into chunks for processing long documents.
+    
+    Uses word boundaries to avoid splitting mid-word. Essential for
+    processing transcripts longer than the model's context window.
     
     Args:
         text (str): Text to split
-        max_chars (int): Maximum characters per chunk
+        max_chars (int): Maximum characters per chunk. Default: 12000
         
     Returns:
         list: List of text chunks
+    
+    Example:
+        >>> long_text = "word " * 10000
+        >>> chunks = chunk_text(long_text, max_chars=5000)
+        >>> print(f"Split into {len(chunks)} chunks")
     """
     words = text.split()
     chunks = []
@@ -50,17 +80,23 @@ def chunk_text(text, max_chars=12000):
     return chunks
 
 
-def call_groq_safe(prompt, system_msg="You are a helpful assistant."):
+def call_groq_safe(prompt: str, system_msg: str = "You are a helpful assistant.") -> Tuple[str, str]:
     """
-    Call Groq API with model fallback strategy
-    Tries multiple models in order if rate limits are hit
+    Call Groq API with model fallback strategy.
+    
+    Tries multiple models in order if rate limits are hit. This ensures
+    the service degrades gracefully under high load.
     
     Args:
         prompt (str): User prompt
-        system_msg (str): System message
+        system_msg (str): System message for context
         
     Returns:
-        tuple: (response_text, model_used)
+        Tuple[str, str]: (response_text, model_used)
+    
+    Example:
+        >>> response, model = call_groq_safe("Summarize: Patient has fever")
+        >>> print(f"Response from {model}: {response}")
     """
     if not groq_client:
         return "Groq API not configured. Please set GROQ_API_KEY environment variable.", "None"
@@ -94,15 +130,29 @@ def call_groq_safe(prompt, system_msg="You are a helpful assistant."):
     return "All models failed. Please check your API key and try again.", "None"
 
 
-def generate_summary(full_text):
+def generate_summary(full_text: str) -> Dict[str, Any]:
     """
-    Generate summary using Groq API with chunking support
+    Generate summary using Groq API with chunking support.
+    
+    Automatically chunks long transcripts and combines partial summaries.
+    Uses medical-specific prompts for accurate medical summarization.
     
     Args:
         full_text (str): Full transcript text
         
     Returns:
-        dict: {"summary": str, "model_used": str, "status": str}
+        Dict[str, Any]: Dictionary containing:
+            - status (str): "success" or "error"
+            - summary (str): Generated summary
+            - model_used (str): LLaMA model version used
+    
+    Raises:
+        SummarizationError: If Groq API is not configured
+    
+    Example:
+        >>> transcript = "[00:00:05] Speaker_0: Xin chào bác sĩ..."
+        >>> result = generate_summary(transcript)
+        >>> print(result['summary'])
     """
     if not groq_client:
         return {
@@ -159,12 +209,20 @@ def generate_summary(full_text):
         }
 
 
-def is_available():
+def is_available() -> bool:
     """
-    Check if Groq service is available
+    Check if Groq service is available.
+    
+    Verifies that GROQ_API_KEY is set and client is initialized.
     
     Returns:
         bool: True if Groq client is initialized
+    
+    Example:
+        >>> if is_available():
+        ...     result = generate_summary(text)
+        ... else:
+        ...     print("Groq API not configured")
     """
     return groq_client is not None
 

@@ -11,6 +11,7 @@ Professional medical transcription system with speaker diarization, punctuation 
 - **Professional Web Interface** - Custom HTML/CSS/JavaScript frontend
 - **Audio Waveform Visualization** - WaveSurfer.js with click-to-seek-pause
 - **Microphone Recording** - Browser-based audio capture
+- **Audio Quality Enhancement** - Noise reduction and volume normalization
 - **SSL/HTTPS** - Secure by default with Nginx
 - **CPU/GPU Support** - Flexible deployment options
 
@@ -27,12 +28,14 @@ Professional medical transcription system with speaker diarization, punctuation 
 
 **CPU Server:**
 ```bash
+cd docker
 export GROQ_API_KEY=your_api_key_here
 docker-compose up --build
 ```
 
 **GPU Server:**
 ```bash
+cd docker
 export GROQ_API_KEY=your_api_key_here
 docker-compose -f docker-compose.yml -f docker-compose.gpu.yml up --build
 ```
@@ -40,29 +43,38 @@ docker-compose -f docker-compose.yml -f docker-compose.gpu.yml up --build
 ### Access
 
 Once running, open your browser to:
-- **Main Interface:** https://localhost/
+- **Main Interface:** https://localhost/ (or http://localhost/)
 - **API Documentation:** http://localhost:8000/docs
+- **Health Check:** http://localhost:8000/health
 
 ## 📁 Project Structure
 
 ```
 project/
+├── docker/                   # Docker configuration
+│   ├── Dockerfile
+│   ├── docker-compose.yml
+│   ├── docker-compose.gpu.yml
+│   └── start_services.sh
 ├── frontend/                 # Custom HTML interface
 │   ├── index.html           # Main page
 │   ├── styles.css           # Professional styling
 │   ├── app.js               # Application logic
 │   └── audio-player.js      # WaveSurfer wrapper
 ├── medical_api/             # Backend API
-│   ├── api.py               # FastAPI application
-│   ├── vibert_service.py    # Punctuation service
-│   ├── groq_service.py      # Summarization service
-│   └── models/              # ASR & Diarization models
-├── vibert_pipeline/         # ViBERT model setup
-├── nginx/                   # Nginx configuration
-├── certs/                   # SSL certificates
-├── docker-compose.yml       # CPU deployment
-├── docker-compose.gpu.yml   # GPU extension
-└── Dockerfile               # Container image
+│   ├── api.py               # FastAPI endpoints (thin layer)
+│   ├── config.py            # Centralized configuration
+│   ├── exceptions.py        # Custom exception types
+│   ├── services/            # Business logic layer
+│   │   ├── asr_service.py   # ASR & diarization
+│   │   ├── audio_processor.py # Pipeline orchestration
+│   │   ├── vibert_service.py  # Punctuation restoration
+│   │   └── groq_service.py    # AI summarization
+│   └── models/              # ML model implementations
+│       └── vibert/          # ViBERT model & cache
+├── nginx/                   # Nginx reverse proxy config
+├── certs/                   # SSL certificates (not in Git)
+├── uploads/                 # Temporary audio files (auto-deleted)
 ```
 
 ## 🎨 User Interface Features
@@ -110,8 +122,10 @@ Body: {"text": "transcript text"}
 
 ## 📖 Documentation
 
+- **[AUDIO_QUALITY_GUIDE.md](AUDIO_QUALITY_GUIDE.md)** - 📚 **READ THIS FIRST** - Factors affecting quality, requirements, troubleshooting
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - Complete deployment guide (Quick start, Git workflow, Production, Troubleshooting)
-- **[BUTTON_DESIGN_SYSTEM.md](BUTTON_DESIGN_SYSTEM.md)** - UI design system and button specifications
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history and recent improvements
+- **[medical_api/README.md](medical_api/README.md)** - Backend architecture documentation
 
 ## 🛠️ Technology Stack
 
@@ -126,6 +140,8 @@ Body: {"text": "transcript text"}
 - Pyannote (Speaker diarization)
 - ViBERT (Punctuation restoration)
 - Groq API (AI summarization)
+- Librosa (Audio processing)
+- noisereduce (Noise reduction preprocessing)
 
 ### Infrastructure
 - Docker & Docker Compose
@@ -133,11 +149,39 @@ Body: {"text": "transcript text"}
 - PyTorch (ML framework)
 - CUDA (GPU acceleration)
 
+## ⚙️ Configuration
+
+All configuration is centralized in `medical_api/config.py`:
+
+### Key Parameters
+```python
+# Diarization threshold (0.0-1.0)
+# Lower = more speakers, Higher = fewer speakers
+DiarizationConfig.CLUSTERING_THRESHOLD = 0.52
+
+# Minimum segment duration (seconds)
+# Higher = filter more noise, lower = keep short speech
+AudioConfig.MIN_SEGMENT_DURATION = 1.0
+
+# Audio preprocessing
+AudioConfig.ENABLE_NOISE_REDUCTION = True  # Reduce background noise
+AudioConfig.ENABLE_NORMALIZATION = True    # Normalize volume
+AudioConfig.ENABLE_DEBUG_LOGGING = False   # Detailed logs
+```
+
+### Scenario Presets
+See **[AUDIO_QUALITY_GUIDE.md](AUDIO_QUALITY_GUIDE.md)** for:
+- Studio recording: `CLUSTERING_THRESHOLD = 0.50`
+- Phone/Zoom: `CLUSTERING_THRESHOLD = 0.48`
+- Single speaker: `CLUSTERING_THRESHOLD = 0.65`
+- Noisy environment: `CLUSTERING_THRESHOLD = 0.60`
+
 ## 🔒 Security
 
 - HTTPS by default with SSL certificates
 - CORS properly configured
 - File size limits enforced (500MB max)
+- Temporary files auto-deleted after processing
 - Secure API communication
 
 ## 📊 Performance
