@@ -6,7 +6,7 @@ Professional **demo** medical transcription system with speaker diarization, pun
 
 ---
 
-## 💡 Why This Project Matters (for Recruiters & Stakeholders)
+## 💡 About the project:
 
 - **Faster documentation**: Turns a Vietnamese doctor–patient conversation audio file into a structured transcript plus short summary.
 - **Clear speaker separation**: Automatically labels who is speaking (e.g. doctor vs patient) with timestamps.
@@ -36,8 +36,6 @@ Professional **demo** medical transcription system with speaker diarization, pun
 
 ## 🧭 What This Project Demonstrates
 
-From a recruiter / hiring manager perspective, this project shows:
-
 - **End-to-end ML system design**
   - Browser frontend, FastAPI backend, audio processing pipeline, and multi-model orchestration.
 - **Applied speech + NLP**
@@ -51,7 +49,7 @@ From a recruiter / hiring manager perspective, this project shows:
 
 ---
 
-## 🧪 Demo Flow (Non-Technical Overview)
+## 🧪 Demo Flow
 
 1. **Record or upload audio** – A Vietnamese consultation or medical conversation.
 2. **Run the pipeline** – The backend processes the file through ASR → diarization → punctuation → summarization.
@@ -60,7 +58,7 @@ From a recruiter / hiring manager perspective, this project shows:
 
 ---
 
-## 🚀 Quick Start (Developer Demo)
+## 🚀 Quick Start
 
 > This section is for **local development / demo only**, not clinical use.
 
@@ -78,13 +76,13 @@ source .venv/bin/activate  # On Windows: .venv\\Scripts\\activate
 pip install -r requirements.txt
 ```
 
-2. **Set the Groq API key (optional, for summaries):**
+2. **Set the Groq API key:**
 
 ```bash
 export GROQ_API_KEY=your_api_key_here  # PowerShell: $env:GROQ_API_KEY="your_api_key_here"
 ```
 
-3. **Start the FastAPI backend (dev mode):**
+3. **Start the FastAPI backend:**
 
 ```bash
 uvicorn medical_api.api:app --reload --host 0.0.0.0 --port 8000
@@ -109,7 +107,7 @@ Then open `http://localhost:3000` and configure the frontend (if needed) so that
 
 > In the full Docker setup, Nginx handles this routing and SSL; in dev mode we keep it simple and focus on the core pipeline.
 
-### Option B – Docker Deployment (Production-Style Demo)
+### Option B – Docker Deployment
 
 **Prerequisites**
 
@@ -367,12 +365,6 @@ nvidia-docker --version
 ```
 
 See **DEPLOYMENT.md** for deeper troubleshooting.
-
----
-
-## 📄 License (Demo-Only)
-
-This project is provided as a **demo and portfolio example only**. It is **not licensed for clinical production use**. For any other usage, please contact the author.
 
 ---
 
