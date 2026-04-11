@@ -321,14 +321,6 @@ See **AUDIO_QUALITY_GUIDE.md** for suggestions, for example:
 
 ---
 
-## 🔒 Demo, Compliance & Data Privacy
-
-- This is a **demo repository** and is **not** a certified medical device or production system.
-- Do **not** use with real patient-identifiable data without proper legal, ethical, and compliance review.
-- HTTPS and basic security measures (file size limits, temp file cleanup, CORS) are included to simulate a production-style deployment, but they are **not a complete security review**.
-
----
-
 ## 🐛 Troubleshooting (Summary)
 
 ### API Status Shows "Offline"
