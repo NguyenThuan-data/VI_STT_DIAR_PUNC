@@ -7,22 +7,14 @@ Professional **demo** medical transcription system: Vietnamese speech-to-text, s
 
 ---
 
-## For recruiters (60-second read)
+## Why I built this
 
-| Question | Answer |
-|----------|--------|
-| What problem does this solve? | Turn a doctor–patient audio recording into a readable, speaker-labeled transcript + optional summary |
-| What was hard? | Orchestrating 4 ML/NLP stages with acceptable latency on CPU; tuning diarization in noisy audio; shipping a full stack (UI → API → Docker) |
-| What does this repo prove? | I can design and implement an **end-to-end applied AI system**, not just a notebook |
-| Can I run it in one click? | **No** — you need to provision models (~500MB) and a Groq API key. See [Model setup](#-model-setup-required-before-running) below |
-| Best way to evaluate | Read this case study → skim `medical_api/services/` → review screenshots in `docs/` (if present) → optional local run after model setup |
-
----
+During a **software engineering internship in Vietnam**, the team needed to turn long doctor–patient consultations into readable medical notes — not raw ASR dumps. Vietnamese medical speech is noisy, overlapping, and domain-specific. One model is not enough. I built this as a **workplace deliverable**: a full stack from browser UI to multi-model pipeline, with honest limits documented upfront.
 
 ## The challenge
 
-- **Technical:** Vietnamese medical speech is noisy, overlapping, and domain-specific. One model is not enough — I needed ASR, diarization, punctuation, and summarization to work as a **pipeline**, not isolated scripts.
-- **Engineering:** Recruiters and demo users expect a web UI, not a CLI. That meant FastAPI, a custom frontend, Docker, Nginx, and honest health/observability — while staying on CPU for accessibility.
+- **Technical:** ASR, diarization, punctuation, and summarization had to work as a **pipeline** on CPU — not isolated notebook experiments.
+- **Engineering:** Demo users expect a web UI, not a CLI — FastAPI, custom frontend, Docker, Nginx, and health checks.
 - **Expectations:** Calling this "medical" raises the bar. I chose to be explicit: this is a **portfolio demo**, not a regulated device.
 
 ## What I did
@@ -46,7 +38,28 @@ Professional **demo** medical transcription system: Vietnamese speech-to-text, s
 |---|---|
 | **Before** | I could train or call individual models in isolation |
 | **After** | I can ship a multi-model pipeline with UI, API contracts, Docker deployment, and operational docs |
-| **Unlocked next** | Accessibility QA on real UIs, agent/MCP tooling, and larger speech+LLM products |
+| **Unlocked next** | **[Accessibility QA automation](https://github.com/NguyenThuan-data/accessibility-audit-case-study)** — same mindset: real users, real failure modes, confirmation-first workflows (MCP + Playwright + Axe at Datacom) |
+
+## Demo / proof
+
+| What to review | Where |
+|----------------|-------|
+| **Architecture & services** | `medical_api/services/` — ASR, diarization, punctuation, Groq modules |
+| **API contract** | `medical_api/api.py` — `/api/transcribe`, `/api/summarize`, `/api/health` |
+| **Deployment guide** | `docs/DEPLOYMENT.md` — model provisioning, Docker, troubleshooting |
+| **Local run (after model setup)** | `uvicorn medical_api.api:app --reload` → [http://localhost:8000/docs](http://localhost:8000/docs) |
+
+**Example workflow:** A ~20-minute consultation recording → diarized, punctuated transcript + optional AI summary (demo exploration only).
+
+> **No hosted demo.** Models (~500MB) and a Groq API key are required. See [Model setup](#-model-setup-required-before-running) below.
+
+### For recruiters (60-second read)
+
+| Question | Answer |
+|----------|--------|
+| What problem does this solve? | Turn doctor–patient audio into a readable, speaker-labeled transcript + optional summary |
+| What was hard? | Orchestrating 4 ML/NLP stages on CPU; tuning diarization in noisy audio; shipping UI → API → Docker |
+| Can I run it in one click? | **No** — provision models and `GROQ_API_KEY`. Best path: read case study → skim `medical_api/services/` |
 
 ---
 
@@ -64,62 +77,19 @@ Professional **demo** medical transcription system: Vietnamese speech-to-text, s
 
 Full checklist: **`docs/DEPLOYMENT.md`** → *Prerequisites → Required Files*.
 
-Without models, `/api/transcribe` will fail — that is expected. Review the code and docs first; run locally only if you need hands-on verification.
-
 ---
 
-## 💡 About the project
+## Technical reference
 
-- **Faster documentation**: Turns a Vietnamese doctor–patient conversation audio file into a structured transcript plus short summary.
-- **Clear speaker separation**: Automatically labels who is speaking (e.g. doctor vs patient) with timestamps.
-- **Higher readability**: Restores punctuation and capitalization so transcripts look like real medical notes, not raw ASR output.
-- **End-to-end system**: Custom web UI → FastAPI backend → ASR + diarization + ViBERT + LLM summarization → Docker/Nginx deployment.
+### Demo flow
 
-**Example demo workflow:** A 20-minute consultation recording is uploaded → the system produces a diarized, punctuated transcript and an AI-generated summary (demo exploration only).
+1. **Record or upload audio** — Vietnamese consultation or medical conversation.
+2. **Run the pipeline** — ASR → diarization → punctuation → summarization.
+3. **Review results** — Speaker-labeled transcript with timestamps and optional AI summary.
 
----
+### Quick start
 
-## 🎯 Key Features
-
-- **Vietnamese ASR** – Offline speech recognition using Sherpa-ONNX.
-- **Speaker Diarization** – Automatic speaker identification and labeling.
-- **Punctuation Restoration** – ViBERT-powered punctuation enhancement for Vietnamese.
-- **AI Summarization** – Groq API integration with LLaMA-family models.
-- **Professional Web Interface** – Custom HTML/CSS/JavaScript frontend (no low-code framework).
-- **Audio Waveform Visualization** – WaveSurfer.js with click-to-seek and auto-pause.
-- **Microphone Recording** – Browser-based audio capture.
-- **Audio Quality Enhancement** – Noise reduction and volume normalization.
-- **SSL/HTTPS via Nginx** – Reverse proxy and HTTPS in the Docker deployment.
-- **CPU/GPU Support** – Flexible docker-compose configs for CPU servers and GPU servers.
-
----
-
-## 🧭 What This Project Demonstrates
-
-- **End-to-end ML system design** — Browser frontend, FastAPI backend, audio processing pipeline, and multi-model orchestration.
-- **Applied speech + NLP** — Sherpa-ONNX, Pyannote, ViBERT, and an LLM for summarization.
-- **Production-style engineering** — Docker, docker-compose, Nginx, HTTPS, health checks, and resource constraints.
-- **Configuration and observability** — Centralized `config.py`, health endpoints, logs, and explicit thresholds.
-- **Pragmatic trade-offs** — Documented limits instead of pretending hospital production-readiness.
-
----
-
-## 🧪 Demo Flow
-
-1. **Record or upload audio** – A Vietnamese consultation or medical conversation.
-2. **Run the pipeline** – ASR → diarization → punctuation → summarization.
-3. **Review results** – Speaker-labeled transcript with timestamps and optional AI summary.
-4. **Copy output** – Demo exploration only; not for real EMR use.
-
----
-
-## 🚀 Quick Start
-
-> **Prerequisite:** Complete [model setup](#-model-setup-required-before-running) first.
-
-### Option A – Local Dev (CPU, No SSL)
-
-1. **Clone and install** (Python 3.10+):
+> **Prerequisite:** Complete model setup above first.
 
 ```bash
 git clone https://github.com/NguyenThuan-data/VI_STT_DIAR_PUNC.git
@@ -127,116 +97,49 @@ cd VI_STT_DIAR_PUNC
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-```
-
-2. **Provision models** into `medical_api/models/` (see `docs/DEPLOYMENT.md`).
-
-3. **Set Groq API key:**
-
-```bash
-export GROQ_API_KEY=your_api_key_here  # PowerShell: $env:GROQ_API_KEY="your_api_key_here"
-```
-
-4. **Start FastAPI:**
-
-```bash
+export GROQ_API_KEY=your_api_key_here
 uvicorn medical_api.api:app --reload --host 0.0.0.0 --port 8000
 ```
 
-5. **Verify:** `http://localhost:8000/docs` → `/api/health`, then `/api/transcribe` with a short audio file.
+Optional frontend: `cd frontend && python -m http.server 3000`
 
-6. **(Optional) Frontend:**
+Docker deployment: see **`docs/DEPLOYMENT.md`**.
 
-```bash
-cd frontend && python -m http.server 3000
-```
+### Models & capabilities (demo-level)
 
-Open `http://localhost:3000` (configure API URL to `http://localhost:8000` if needed).
+| Works best | Struggles with |
+|------------|----------------|
+| Quiet clinic, clear voices | Very noisy environments |
+| Phone/Zoom with decent mic | Heavy speaker overlap |
+| Single-speaker dictation | Files >1 hour (time/memory) |
 
-### Option B – Docker Deployment
-
-See **`docs/DEPLOYMENT.md`** for CPU/GPU compose commands, certificates, and troubleshooting.
-
-**Access (when deployed):**
-
-- **Main Interface:** `https://localhost/`
-- **API Docs:** `http://localhost:8000/docs`
-- **Health:** `http://localhost:8000/health`
-
----
-
-## 📁 Project Structure (Simplified)
-
-```text
-project/
-├── docker/                   # Docker configuration
-├── frontend/                 # Custom HTML interface
-├── medical_api/              # Backend API
-│   ├── api.py                # FastAPI endpoints
-│   ├── config.py             # Centralized configuration
-│   └── services/             # ASR, audio, ViBERT, Groq
-├── nginx/                    # Reverse proxy
-├── certs/                    # SSL (not in Git)
-└── docs/                     # DEPLOYMENT.md, guides
-```
-
----
-
-## 🔍 Models & Capabilities (Demo-Level)
-
-### Works Best For
-
-| Scenario | Expected Quality |
-|----------|------------------|
-| Quiet clinic room, clear voices | High transcription accuracy, stable diarization |
-| Phone/Zoom with decent microphone | Good transcription; diarization depends on noise |
-| Single speaker (dictation-style) | Very strong transcription, simple segmentation |
-
-### Struggles With
-
-| Scenario | Limitations |
-|----------|-------------|
-| Very noisy environments | Diarization less reliable |
-| Heavy overlap (interruptions) | ASR and diarization less stable |
-| Extremely long files (>1 hour) | Processing time and memory increase |
-
-See `medical_api/config.py` and **AUDIO_QUALITY_GUIDE.md** for tuning.
-
----
-
-## 🔧 API Endpoints
+### API endpoints
 
 | Method | Path | Purpose |
 |--------|------|---------|
 | GET | `/api/health` | Service health |
 | POST | `/api/transcribe` | Upload audio → transcript |
-| POST | `/api/summarize` | JSON body `{ "text": "..." }` → summary |
+| POST | `/api/summarize` | JSON `{ "text": "..." }` → summary |
 
-Interactive docs at `/docs` when the backend is running.
+### Project structure
 
----
+```text
+VI_STT_DIAR_PUNC/
+├── frontend/                 # Custom HTML interface
+├── medical_api/
+│   ├── api.py
+│   ├── config.py
+│   └── services/             # ASR, audio, ViBERT, Groq
+├── docker/
+├── nginx/
+└── docs/DEPLOYMENT.md
+```
 
-## 📖 Additional Documentation
+### Tech stack
 
-- **docs/DEPLOYMENT.md** — Model provisioning, Docker, updates, troubleshooting
-- **AUDIO_QUALITY_GUIDE.md** — Audio quality factors and threshold presets
-- **medical_api/README.md** — Backend architecture
-
----
-
-## 🛠️ Technology Stack
-
-**Frontend:** HTML5, CSS3, Vanilla JS, WaveSurfer.js  
-**Backend:** FastAPI, Sherpa-ONNX, Pyannote, ViBERT, Groq API, Librosa, pydub  
-**Infrastructure:** Docker, Nginx, PyTorch (optional GPU)
-
----
-
-## 🙏 Acknowledgments
-
-Sherpa-ONNX · Pyannote · ViBERT · Groq · WaveSurfer.js
+FastAPI · Sherpa-ONNX · Pyannote · ViBERT · Groq · Docker · Nginx · WaveSurfer.js
 
 ---
 
-**Version:** 2.1 (Portfolio case-study README)  
+**Version:** 2.2 (Internship context + accessibility level-up link)  
 **Last Updated:** 2026-06-11
