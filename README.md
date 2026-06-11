@@ -38,7 +38,6 @@ During a **software engineering internship in Vietnam**, the team needed to turn
 |---|---|
 | **Before** | I could train or call individual models in isolation |
 | **After** | I can ship a multi-model pipeline with UI, API contracts, Docker deployment, and operational docs |
-| **Unlocked next** | **[Accessibility QA automation](https://github.com/NguyenThuan-data/accessibility-audit-case-study)** — same mindset: real users, real failure modes, confirmation-first workflows (MCP + Playwright + Axe at Datacom) |
 
 ## Demo / proof
 
